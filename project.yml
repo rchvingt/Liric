@@ -1,0 +1,56 @@
+# XcodeGen spec → `xcodegen generate` produces Liric.xcodeproj (git-ignored).
+# Install once with `brew install xcodegen`.
+name: Liric
+options:
+  bundleIdPrefix: com.rchvingt
+  deploymentTarget:
+    macOS: "12.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MACOSX_DEPLOYMENT_TARGET: "12.0"
+targets:
+  LiricCore:
+    type: framework
+    platform: macOS
+    sources: [Sources/LiricCore]
+    dependencies:
+      - sdk: libsqlite3.tbd
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.rchvingt.liric.core
+
+  Liric:
+    type: application
+    platform: macOS
+    sources: [Sources/Liric]
+    dependencies:
+      - target: LiricCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rchvingt.liric
+        INFOPLIST_FILE: Config/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Config/Liric.entitlements
+        ENABLE_HARDENED_RUNTIME: YES
+        CODE_SIGN_STYLE: Automatic
+
+  LiricCoreTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources: [Tests/LiricCoreTests]
+    dependencies:
+      - target: LiricCore
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  Liric:
+    build:
+      targets:
+        Liric: all
+        LiricCoreTests: [test]
+    test:
+      targets: [LiricCoreTests]

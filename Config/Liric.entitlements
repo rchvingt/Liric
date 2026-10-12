@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	  Not sandboxed on purpose: VOXPlayerMonitor inspects VOX's open file descriptors
+	  (proc_pidinfo) and reads the audio file's tags, neither of which a sandboxed app
+	  may do for another process. Fine for direct / notarized distribution; the Mac App
+	  Store would require switching to the AppleScript-only path.
+	-->
+	<key>com.apple.security.app-sandbox</key>
+	<false/>
+	<!-- Hardened runtime: allow sending Apple Events to VOX (AppleScript fallback). -->
+	<key>com.apple.security.automation.apple-events</key>
+	<true/>
+</dict>
+</plist>
